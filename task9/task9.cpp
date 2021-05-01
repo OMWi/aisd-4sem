@@ -24,17 +24,6 @@ int main() {
         
     }
 
-/*
-    for (int i = 0; i < len; i++) {
-        cout << str[i] << ' ';
-    }
-    cout << endl;
-    for (int i = 0; i < len; i++) {
-        cout << ranges[i] << ' ';
-    }
-    cout << endl;
-*/
-
     bool requested = false;
     for (int i = 0; i < len; i++) {
         if (!requested) {
@@ -52,13 +41,6 @@ int main() {
             }
         }
     }
-
-/*
-    for (int i = 0; i < len; i++) {
-        cout << str[i] << ' ';
-    }
-    cout << endl;
-*/
 
     cout << str << endl;
 }
