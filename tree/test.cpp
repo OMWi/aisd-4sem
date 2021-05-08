@@ -5,10 +5,11 @@ using namespace std;
 
 int main() {
     Tree* tree = new Tree();
-    tree->add(3);
-    
 
-
-
+    while (true) {
+        int key;
+        cin >> key;
+        tree->insert(key);
+    }
     return 0;
 }

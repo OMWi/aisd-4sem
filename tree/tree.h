@@ -1,3 +1,5 @@
+enum Color {Black, Red};
+
 struct Node {
     int key;
     Color color;
@@ -6,14 +8,11 @@ struct Node {
     Node* parent;
     Node(int key) {
         this->key = key;
-        color = Color::Red;
         left = right = nullptr;
     }
-    Node* grandfather();
+    Node* grandparent();
     Node* uncle();
 };
-
-enum Color {Black, Red};
 
 class Tree {
     Node* root;
@@ -26,7 +25,9 @@ public:
     void rotateRight(Node* node); 
     void recolor(Node* node);
 
-    void insert(int key);      
+    void insert(int key);   
+    void insertFix(Node* newNode);   
+
     Node* search(int key); 
 
 };

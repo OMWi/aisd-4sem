@@ -1,6 +1,6 @@
 #include "tree.h"
 
-Node* Node::grandfather() {
+Node* Node::grandparent() {
     if ((this != nullptr) && (this->parent != nullptr)) 
         return this->parent->parent;
     else
@@ -8,7 +8,7 @@ Node* Node::grandfather() {
 }
 
 Node* Node::uncle() {
-    Node* grand = grandfather();
+    Node* grand = grandparent();
     if (grand == nullptr) 
         return nullptr;
     if (this->parent == grand->left) 
@@ -65,55 +65,73 @@ void Tree::recolor(Node* node) {
         node->color = Color::Black;
 }
 
-
 void Tree::insert(int key) {
-    Node* newNode = new Node(key);
-    if (!root) {
-        newNode->color = Color::Black;
-        root = newNode;
-        return;
-    }
-
-    Node* current = root;
-    while (!current) {
-        if (newNode->key > current->key) {
+    Node* parent = nullptr, *current = root;
+    while (current) {
+        parent = current;
+        if (key > current->key) {
             current = current->right;
         }
-        else if (newNode->key < current->key) {
+        else if (key < current->key) {
             current = current->left;
         }
     }
-
+    Node* newNode = new Node(key);
     current = newNode;
-    if (current->parent->color == Color::Red) {
-        if (!current->uncle() || current->uncle()->color == Color::Black) {
-            Node* p = current->parent;
-            Node* g = current->grandfather();
-            if (p == g->right && current == p->right) {
-                rotateLeft(g);
-                recolor(p->left);
-                recolor(p);
-            }
-            else if (p == g->right && current == p->left) {
-                rotateRight(p);
-                rotateLeft(g);
-                recolor(p->left);
-                recolor(p);
-            }
-            else if (p == g->left && current == p->left) {
-                
-            }
+    current->parent = parent;
+    if (parent) {
+        if (current->key < parent->key) {
+            parent->left = current;
         }
-        else if (current->uncle()->color == Color::Red) {
-            recolor(current->parent);
-            recolor(current->uncle());
-            if (current->grandfather() != root)
-                recolor(current->grandfather());
+        else {
+            parent->right = current;
         }
-    } 
-           
+    }    
+    else {
+        root = current;
+        root->color = Black;
+        return;
+    }
+    current->color = Red;
+    if (current->parent->color == Red)
+        insertFix(current); 
 }
 
+void Tree::insertFix(Node* x) {
+    if (x == root) {
+        x->color = Black;
+        return;
+    }
+    if (!x->uncle() || x->uncle()->color == Black) {
+        Node* p = x->parent;
+        Node* g = x->grandparent();
+        if (p == g->right) {
+            if (x == p->left) {
+                rotateRight(p);
+            }
+            rotateLeft(g);
+            recolor(g);
+            recolor(g->parent);
+        }
+        else {
+            if (x == p->right) {
+                rotateLeft(p);
+            }
+            rotateRight(g);
+            recolor(g);
+            recolor(g->parent);
+        }
+        if (root->parent) root = root->parent;
+        if (root->color == Red) recolor(root);
+    }
+    else {
+        Node* g = x->grandparent();
+        recolor(g);
+        recolor(g->left);
+        recolor(g->right);
+        insertFix(g);        
+    }
+}
 
 
 
